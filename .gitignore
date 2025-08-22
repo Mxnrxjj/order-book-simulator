@@ -1,0 +1,15 @@
+# Compiled executables
+*.exe
+*.out
+a.exe
+main.exe
+
+# Object files
+*.o
+*.obj
+
+# Precompiled headers
+*.gch
+
+# User-specific build scripts (optional)
+build.bat
