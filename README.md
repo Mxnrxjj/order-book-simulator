@@ -4,16 +4,6 @@ Hello! I built this project to dive deep into the world of high-performance comp
 
 ---
 
-### 🚀 Live Demo
-
-Here’s a quick look at the engine in action: placing buy and sell orders, seeing an instant trade execution, and then displaying the updated, real-time order book.
-
-*(**Pro Tip:** Use a free tool like `asciinema` or `termtoscreen` to record your terminal session, then convert it to a GIF and upload it here. It's incredibly impressive to recruiters.)*
-
-
-
----
-
 ### ✅ Core Features
 
 * **Real-Time Matching Engine:** The engine instantly matches `BUY` and `SELL` limit orders based on **price-time priority**. It correctly handles both full and partial fills.
