@@ -5,6 +5,7 @@
 #include<vector>
 #include<queue>
 #include<unordered_map>
+#include<fstream> //For adding a log file
 #include "Order.h"
 
 
@@ -25,7 +26,7 @@ struct SellOrderComparator{
 		if(a.price == b.price) {
 			return a.timestamp > b.timestamp;
 		}
-		// Otherwise higher price gets priority
+		// Otherwise lower price gets priority
 		return a.price > b.price;
 	}
 };

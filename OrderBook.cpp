@@ -105,6 +105,8 @@ void OrderBook::displayBook() {
     
 	//Sell price lowest to highest
 	std::reverse(sellList.begin(), sellList.end());
+	//Buy price highest to lowest
+	std::reverse(buyList.begin(), buyList.end());
 	
 	//Printing
 	std::cout << "\n================ ORDER BOOK ================\n";
@@ -133,14 +135,20 @@ void OrderBook::displayBook() {
 
 void OrderBook::removeOrder(long long orderId) {
 	//Removes Order
+	auto it = allOrders.find(orderId);
 	
-	if(allOrders.find(orderId) == allOrders.end()) {
+	if(it == allOrders.end()) {
 		std::cout<<"\nError: Order ID "<<orderId<<" not found!.\n";
 		return;
 	}
 	
+	if(it->second.isCancelled) {
+		std::cout<<"\nError: Order ID "<<orderId<<" has already been cancelled.\n";
+		return;
+	}
+	
 	//Lazy deletion
-	allOrders[orderId].isCancelled = true;
+	it->second.isCancelled = true;
 	std::cout<<"\nOrder "<<orderId<<" has been cancelled!.\n";
 }
 
