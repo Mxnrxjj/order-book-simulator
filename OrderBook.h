@@ -40,7 +40,7 @@ private:
 	std::priority_queue<Order, std::vector<Order>, SellOrderComparator> sellOrders;
 	
 	//Map to track orders
-	std::unordered_map<int, Order> allOrders;
+	std::unordered_map<long long, Order> allOrders;
 	
 	//Private helper function containing matching logic
 	void matchOrders();
@@ -54,7 +54,7 @@ public:
 	void addOrder(const Order& order);
 	
 	// Function to remove Orders
-	void removeOrder(int orderId);
+	void removeOrder(long long orderId);
 	
 	// Function to display current state of order book
 	void displayBook();

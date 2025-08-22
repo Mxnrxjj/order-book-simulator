@@ -8,15 +8,15 @@ int main() {
 	std::cout<<"\nInitializing Order Matching Engine...\n";
 	OrderBook obj;
 	std::cout<<"\nOrder Matching Engine Is Ready\n";
-	std::cout<<"\n-------------------------------\n";
-	std::cout<<"\n----COMMANDS----\n";
+	std::cout<<"\n--------------------------------\n";
+	std::cout<<"\n------------COMMANDS------------\n";
 	std::cout<<"\nBUY [quantity] [price]";
 	std::cout<<"\nSELL [quantity] [price]";
 	std::cout<<"\nCANCEL [OrderID]";
 	std::cout<<"\nSHOW";
 	std::cout<<"\nEXIT\n";
 	
-	static int nextOrderID = 1;
+	static long long nextOrderID = 1;
 	std::string line;
 	
 	while(true) {
@@ -39,13 +39,16 @@ int main() {
         	int quantity;
         	double price;
         	if(ss >> quantity && ss >> price) {
-        		
-        		long long timeStamp = std::chrono::duration_cast<std::chrono::nanoseconds>(
-					std::chrono::system_clock::now().time_since_epoch()
-				).count();
-				
-        		Order newOrder = {nextOrderID++, OrderType::BUY, price, quantity, timeStamp};
-        		obj.addOrder(newOrder);
+        		if (quantity <= 0 || price <= 0) {
+			        std::cout << "Error: Order quantity and price must be positive.\n";
+			    } else {
+	        		long long timeStamp = std::chrono::duration_cast<std::chrono::nanoseconds>(
+						std::chrono::system_clock::now().time_since_epoch()
+					).count();
+					
+	        		Order newOrder = {nextOrderID++, OrderType::BUY, price, quantity, timeStamp};
+	        		obj.addOrder(newOrder);
+        		}
 			} else {
 				std::cout<<"\nInvalid format. Use : BUY [quantity] [price]\n";
 			}
@@ -54,19 +57,22 @@ int main() {
 			int quantity;
 			double price;
 			if(ss >> quantity && ss >> price) {
-				
-				long long timeStamp = std::chrono::duration_cast<std::chrono::nanoseconds>(
-					std::chrono::system_clock::now().time_since_epoch()
-				).count();
-				
-				Order newOrder = {nextOrderID++, OrderType::SELL, price, quantity, timeStamp};
-				obj.addOrder(newOrder);
+				if (quantity <= 0 || price <= 0) {
+			        std::cout << "Error: Order quantity and price must be positive.\n";
+			    } else {
+					long long timeStamp = std::chrono::duration_cast<std::chrono::nanoseconds>(
+						std::chrono::system_clock::now().time_since_epoch()
+					).count();
+					
+					Order newOrder = {nextOrderID++, OrderType::SELL, price, quantity, timeStamp};
+					obj.addOrder(newOrder);
+				}
 			} else {
 				std::cout<<"\nInvalid format. Use : SELL [quantity] [price]\n";
 			}
 		}
 		else if(command == "CANCEL") {
-			int orderID;
+			long long orderID;
 			if(ss >> orderID) {
 				obj.removeOrder(orderID);
 			} else {

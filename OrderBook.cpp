@@ -22,7 +22,20 @@ void OrderBook::addOrder(const Order& newOrder) {
 
 void OrderBook::matchOrders() {
 	
-	while( !buyOrders.empty() && !sellOrders.empty() && buyOrders.top().price >= sellOrders.top().price) {
+	//Lazy deletion begin
+	
+	while(!buyOrders.empty() && allOrders[buyOrders.top().id].isCancelled) {
+		allOrders.erase(buyOrders.top().id); //Removes from master list
+		buyOrders.pop(); //Removes from heap
+	}
+	while(!sellOrders.empty() && allOrders[sellOrders.top().id].isCancelled) {
+		allOrders.erase(sellOrders.top().id); //Removes from master list
+		sellOrders.pop(); //Removes from heap
+	}
+	//Lazy deletion end
+	
+	
+	while(!buyOrders.empty() && !sellOrders.empty() && buyOrders.top().price >= sellOrders.top().price) {
 		
 		Order topBuyer = buyOrders.top();
 		Order topSeller = sellOrders.top();
@@ -56,28 +69,40 @@ void OrderBook::matchOrders() {
 			allOrders.erase(topSeller.id);
 		}
 		
+		//Lazy deletion if some order in between was marked to be cancelled
+		while(!buyOrders.empty() && allOrders[buyOrders.top().id].isCancelled) {
+			allOrders.erase(buyOrders.top().id);
+			buyOrders.pop();
+		}
+		while(!sellOrders.empty() && allOrders[sellOrders.top().id].isCancelled) {
+			allOrders.erase(sellOrders.top().id);
+			sellOrders.pop();
+		}
+		
 	}
 	
 }
 
 void OrderBook::displayBook() {
-	//Copying queues
-	auto buyQ = buyOrders;
-	auto sellQ = sellOrders;
 	
 	//Using vector to store and sort
 	std::vector<Order> buyList;
-	while(!buyQ.empty()) {
-		buyList.push_back(buyQ.top());
-		buyQ.pop();
-	}
-	
 	std::vector<Order> sellList;
-	while(!sellQ.empty()) {
-		sellList.push_back(sellQ.top());
-		sellQ.pop();
+	
+	for(const auto& pair : allOrders) {
+		const Order& order = pair.second;
+		if(!order.isCancelled) {
+			if(order.type == OrderType::BUY) {
+                buyList.push_back(order);
+            } else {
+                sellList.push_back(order);
+            }
+		}
 	}
 	
+	std::sort(buyList.begin(), buyList.end(), BuyOrderComparator());
+    std::sort(sellList.begin(), sellList.end(), SellOrderComparator());
+    
 	//Sell price lowest to highest
 	std::reverse(sellList.begin(), sellList.end());
 	
@@ -106,8 +131,16 @@ void OrderBook::displayBook() {
 	
 }
 
-void OrderBook::removeOrder(int orderId) {
+void OrderBook::removeOrder(long long orderId) {
 	//Removes Order
 	
+	if(allOrders.find(orderId) == allOrders.end()) {
+		std::cout<<"\nError: Order ID "<<orderId<<" not found!.\n";
+		return;
+	}
+	
+	//Lazy deletion
+	allOrders[orderId].isCancelled = true;
+	std::cout<<"\nOrder "<<orderId<<" has been cancelled!.\n";
 }
 
